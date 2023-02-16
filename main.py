@@ -1,4 +1,5 @@
 import os
+import textwrap
 import openai
 from dotenv import load_dotenv
 
@@ -46,10 +47,10 @@ while True:
     if prompt == "":
         print(f"You used {total_token_usage} tokens during this session.")
         break
-    print("Loading...")
-    noun_confirmation = clean_response(generate_response(leading_question + prompt, 0))
-    # print(f'{noun_confirmation}') #Debug
-    if noun_confirmation == 'Yes':
+    print("Checking animal...")
+    animal_confirmation = clean_response(generate_response(leading_question + prompt, 0))
+    if animal_confirmation == 'Yes':
+        print(prompt, "Accepted. \nGenerating story...")
         response = call_horror_generator(prompt)
     else:
         response = 'Error, you have not entered an animal. Please try again.\n'
