@@ -14,17 +14,21 @@ def clean_response(open_ai_response):
     return cleaned_response
 
 
-def generate_response(open_ai_prompt):
+total_token_usage = 0
+
+
+def generate_response(open_ai_prompt, temp=1):
+    global total_token_usage
     open_ai_response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=open_ai_prompt,
         max_tokens=60,
-        temperature=0.8,
+        temperature=temp,
         top_p=1.0,
         frequency_penalty=0.5,
         presence_penalty=0.0
     )
-    # total_token_usage = open_ai_response['usage']['total_tokens']
+    total_token_usage += open_ai_response['usage']['total_tokens']
     return open_ai_response['choices'][0]['text']
 
 
@@ -36,15 +40,17 @@ def call_horror_generator(noun):
 
 
 while True:
-    prompt = input("Enter a noun to create a horror story. Or press enter to exit: ")
-    leading_question = 'Here is a list of example nouns [Mcdonalds, Tom, Cat]. Please only respond in Yes or No, ' \
-                       'is the following word a noun: '
+    prompt = input("Enter an animal to create a horror story. Or press enter to exit:  ")
+    leading_question = f'Please only respond with Yes or No, ' \
+                       'is the following word an animal: '
     if prompt == "":
+        print(f"You used {total_token_usage} tokens during this session.")
         break
     print("Loading...")
-    noun_confirmation = clean_response(generate_response(leading_question + prompt))
+    noun_confirmation = clean_response(generate_response(leading_question + prompt, 0))
+    # print(f'{noun_confirmation}') #Debug
     if noun_confirmation == 'Yes':
         response = call_horror_generator(prompt)
     else:
-        response = 'Error, you have not entered a noun. Please try again.\n'
+        response = 'Error, you have not entered an animal. Please try again.\n'
     print(response)
