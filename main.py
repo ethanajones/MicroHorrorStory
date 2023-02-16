@@ -53,5 +53,6 @@ while True:
         print(prompt, "Accepted. \nGenerating story...")
         response = call_horror_generator(prompt)
     else:
-        response = 'Error, you have not entered an animal. Please try again.\n'
+        response = f'Error, \"{prompt}\" not accepted. Please try again.\n'
+    response = textwrap.fill(response, width=60)
     print(response)
